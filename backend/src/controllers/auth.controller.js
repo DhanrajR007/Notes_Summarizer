@@ -1,4 +1,5 @@
 import { uploadImage } from "../database/imagekit.db.js";
+const imageUrl = process.env.DEFAULT_IMAGE;
 import {
   loginUserService,
   registerUserService,
@@ -28,19 +29,23 @@ export const login = async (req, res) => {
   }
 };
 export const register = async (req, res) => {
-  const { name, email, password, imageUrl } = req.body;
+  const { name, email, password } = req.body;
   if (!name || !email || !password) {
     throw new BadRequestError("All fields are required");
   }
   try {
-    const file = req.file.buffer;
-    const response = await uploadImage(file);
+    const file = req.file?.buffer || imageUrl;
+
+    let response;
+    if (file) {
+      response = await uploadImage(file);
+    }
 
     const { user, token } = await registerUserService(
       email,
       name,
       password,
-      response || imageUrl
+      response
     );
     res.cookie("accesstoken", token, {
       httpOnly: true,

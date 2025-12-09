@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 import ImageKit from "@imagekit/nodejs";
-import fs from "fs";
 import { toFile } from "@imagekit/nodejs";
 
 const client = new ImageKit({
