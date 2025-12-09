@@ -24,7 +24,7 @@ export const createUser = async (email, name, password, imageUrl) => {
       email,
       name,
       password: hashedPassword,
-      imageUrl,
+      imageUrl: imageUrl,
     });
     return user;
   } catch (err) {
