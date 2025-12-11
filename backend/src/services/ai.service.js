@@ -1,31 +1,47 @@
-import { GoogleGenAI } from "@google/genai";
-const ai = new GoogleGenAI({});
-export const generateSummary = async (file, text) => {
-  console.log(file, text);
-  const contents = [];
+import { uploadFile } from "../database/imagekit.db.js";
+import { createMcq, createQus, createSummary } from "../doa/ai.dao.js";
+import { generate } from "./gemini.service.js";
+import { mcqPrompt, questionPrompt, summaryPrompt } from "../utils/helper.js";
 
-  if (file) {
-    // PDF upload hua
-    contents.push({ text: "Summarize this document" }); // instruction
-    contents.push({
-      inlineData: {
-        mimeType: "application/pdf",
-        data: file.buffer.toString("base64"),
-      },
-    });
-  } else if (text) {
-    // Direct text
-    contents.push({ text: text });
-  }
+export const generateSummary = async (file, text, userId) => {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: contents,
-    });
-
-    return { summary: response.text };
-  } catch (err) {
-    console.error(err);
-    throw err;
+    let fileUrl = null;
+    if (file) {
+      fileUrl = await uploadFile(file);
+    }
+    const prompt = summaryPrompt();
+    const summary = await generate(file, text, prompt);
+    const data = await createSummary(text || fileUrl, summary.data, userId);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const generateQuestion = async (file, text, userId) => {
+  try {
+    let fileUrl = null;
+    if (file) {
+      fileUrl = await uploadFile(file);
+    }
+    const prompt = questionPrompt();
+    const question = await generate(file, text, prompt);
+    const data = await createQus(text || fileUrl, question.data, userId);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const generateMCQ = async (file, text, userId) => {
+  try {
+    let fileUrl = null;
+    if (file) {
+      fileUrl = await uploadFile(file);
+    }
+    const prompt = mcqPrompt();
+    const mcq = await generate(file, text, prompt);
+    const data = await createMcq(text || fileUrl, mcq.data, userId);
+    return data;
+  } catch (error) {
+    throw error;
   }
 };

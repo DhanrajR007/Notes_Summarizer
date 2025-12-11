@@ -1,5 +1,5 @@
 import express from "express";
-import { summary } from "../controllers/ai.controller.js";
+import { MCQ, question, summary } from "../controllers/ai.controller.js";
 import { userAuth } from "../middleware/auth.middleware.js";
 import multer from "multer";
 
@@ -10,7 +10,7 @@ const upload = multer({
 
 router.post("/summary", userAuth, upload.single("file"), summary);
 // router.post("/translate");
-// router.post("/mcq");
-// router.post("/question");
+router.post("/mcq", userAuth, upload.single("file"), MCQ);
+router.post("/question", userAuth, upload.single("file"), question);
 
 export default router;

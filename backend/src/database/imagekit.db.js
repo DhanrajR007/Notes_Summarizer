@@ -23,3 +23,17 @@ export const uploadImage = async (file) => {
     throw err;
   }
 };
+export const uploadFile = async (file) => {
+  try {
+    const files = await toFile(file.buffer);
+    const response = await client.files.upload({
+      file: files,
+      fileName: Date.now() + ".pdf",
+      folder: "notes_summarizer_files",
+    });
+
+    return response.url;
+  } catch (err) {
+    throw err;
+  }
+};
