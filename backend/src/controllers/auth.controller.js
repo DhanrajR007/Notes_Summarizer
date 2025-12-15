@@ -34,7 +34,7 @@ export const register = async (req, res) => {
     throw new BadRequestError("All fields are required");
   }
   try {
-    const file = req.file?.buffer || imageUrl;
+    const file = req.file?.buffer;
 
     let response;
     if (file) {

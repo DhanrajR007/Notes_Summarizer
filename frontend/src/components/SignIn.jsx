@@ -1,9 +1,29 @@
-import React from "react";
+import { useState } from "react";
+import { loginUser } from "../apis/user.api";
+import { useDispatch } from "react-redux";
+import { login } from "../store/slice/authSlice";
 
 const SignIn = ({ onSwitch, onLogin }) => {
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (onLogin) onLogin();
+    setLoading(true);
+
+    try {
+      const user = await loginUser(email, password);
+      dispatch(login(user));
+      setLoading(false);
+      setEmail("");
+      setPassword("");
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
   };
 
   return (
@@ -21,6 +41,8 @@ const SignIn = ({ onSwitch, onLogin }) => {
             required
             className="input-modern"
             placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div>
@@ -35,12 +57,20 @@ const SignIn = ({ onSwitch, onLogin }) => {
             required
             className="input-modern"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
-        <button type="submit" className="btn-primary">
-          Sign In
-        </button>
+        {loading ? (
+          <button type="submit" className="btn-primary">
+            Signin In
+          </button>
+        ) : (
+          <button type="submit" className="btn-primary">
+            Sign In
+          </button>
+        )}
       </form>
 
       <div className="text-center pt-2">

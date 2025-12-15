@@ -1,17 +1,46 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { registerUser } from "../apis/user.api";
+import { useDispatch } from "react-redux";
+import { login } from "../store/slice/authSlice";
 
 const SignUp = ({ onSwitch, onLogin }) => {
+  const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
+
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("email", email);
+  formData.append("password", password);
+  formData.append("profileImage", image);
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
       setProfileImage(URL.createObjectURL(e.target.files[0]));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (onLogin) onLogin();
+    try {
+      const user = await registerUser(formData);
+      dispatch(login(user));
+      setName("");
+      setEmail("");
+      setPassword("");
+      setImage(null);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
   };
 
   return (
@@ -76,6 +105,8 @@ const SignUp = ({ onSwitch, onLogin }) => {
             required
             className="input-modern"
             placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
 
@@ -91,6 +122,8 @@ const SignUp = ({ onSwitch, onLogin }) => {
             required
             className="input-modern"
             placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -106,12 +139,20 @@ const SignUp = ({ onSwitch, onLogin }) => {
             required
             className="input-modern"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
-        <button type="submit" className="btn-primary">
-          Create Account
-        </button>
+        {loading ? (
+          <button type="submit" className="btn-primary">
+            Loading...
+          </button>
+        ) : (
+          <button type="submit" className="btn-primary">
+            Create Account
+          </button>
+        )}
       </form>
 
       <div className="text-center pt-2">

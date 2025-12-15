@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import TextInput from "../components/TextInput";
 import FileInput from "../components/FileInput";
+import { useSelector } from "react-redux";
 
 const Dashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState("text"); // 'text' or 'file'
   const [generationType, setGenerationType] = useState("summary"); // 'summary', 'mcq', 'questions'
   const [textInput, setTextInput] = useState("");
   const [file, setFile] = useState(null);
+  const user = useSelector((state) => state.auth);
+  console.log(user);
 
   const handleTextChange = (e) => {
     setTextInput(e.target.value);

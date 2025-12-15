@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema(
     },
     imageUrl: {
       type: String,
-      default: process.env.DEFAULT_IMAGE,
+      default:
+        "https://ik.imagekit.io/ftquziwxr/notes_summarizer_profile/user.jpg?updatedAt=1765277082628",
     },
   },
   {
