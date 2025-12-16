@@ -1,27 +1,11 @@
-import React, { useState } from "react";
-import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
-import History from "./pages/History";
-
+import { Outlet } from "@tanstack/react-router";
+import Navbar from "./components/Navbar";
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-  };
-
   return (
-    <>
-      <Dashboard onLogout={handleLogout} />
-      <Profile />
-      <Auth />
-      <History />
-    </>
+    <div className="mt-20">
+      <Navbar />
+      <Outlet />
+    </div>
   );
 };
 
