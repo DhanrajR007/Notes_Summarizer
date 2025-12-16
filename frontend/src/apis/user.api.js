@@ -11,3 +11,8 @@ export const registerUser = async (formData) => {
   const user = await axiosInstance.post("/auth/register", formData);
   return user.data;
 };
+
+export const getCurrentUser = async () => {
+  const user = await axiosInstance.get("/auth/me");
+  return user.data;
+};

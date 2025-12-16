@@ -5,6 +5,7 @@ import Auth from "../pages/Auth";
 import Profile from "../pages/Profile";
 import Dashboard from "../pages/Dashboard";
 import History from "../pages/History";
+import { checkAuth } from "../utils/helper";
 
 const rootRoute = createRootRoute({
   component: App,
@@ -26,21 +27,21 @@ const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/profile",
   component: Profile,
-  // beforeLoad: checkAuth,
+  beforeLoad: checkAuth,
 });
 
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/dashboard",
   component: Dashboard,
-  // beforeLoad: checkAuth,
+  beforeLoad: checkAuth,
 });
 
 const historyRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/history",
   component: History,
-  // beforeLoad: checkAuth,
+  beforeLoad: checkAuth,
 });
 
 export const routeTree = rootRoute.addChildren([
