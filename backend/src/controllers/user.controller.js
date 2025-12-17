@@ -3,27 +3,35 @@ import AiQus from "../model/aiQus.model.js";
 import Aisummary from "../model/aisummary.model.js";
 
 export const getAllNotes = async (req, res) => {
-  const user = req.user;
-  if (!user) {
-    throw new Error("User not found");
-  }
-  const notes = [
-    {
-      summeries: {
-        value: await Aisummary.find({ user: user._id }),
-      },
-      mcqs: {
-        value: await AiMcq.find({ user: user._id }),
-      },
-      qus: {
-        value: await AiQus.find({ user: user._id }),
-      },
-    },
-  ];
+  try {
+    const userId = req.user?._id;
 
-  return res.status(200).json({
-    success: true,
-    message: "Notes fetched successfully",
-    notes,
-  });
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authorized",
+      });
+    }
+
+    const [summeries, mcqs, qus] = await Promise.all([
+      Aisummary.find({ user: userId }),
+      AiMcq.find({ user: userId }),
+      AiQus.find({ user: userId }),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Notes fetched successfully",
+      notes: {
+        summeries,
+        mcqs,
+        qus,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
 };

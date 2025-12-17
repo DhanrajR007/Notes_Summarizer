@@ -1,43 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getAllNotes } from "../apis/user.api";
+import { useQuery } from "@tanstack/react-query";
 
 const History = () => {
-  const [historyItems] = useState([
-    {
-      id: 1,
-      title: "Introduction to React Hooks",
-      type: "Summary",
-      date: "2024-03-15",
-      duration: "2 min",
-    },
-    {
-      id: 2,
-      title: "Q3 Financial Report",
-      type: "MCQ",
-      date: "2024-03-14",
-      duration: "5 min",
-    },
-    {
-      id: 3,
-      title: "History of Ancient Rome",
-      type: "Questions",
-      date: "2024-03-12",
-      duration: "--",
-    },
-    {
-      id: 4,
-      title: "Marketing Strategy 2025",
-      type: "Summary",
-      date: "2024-03-10",
-      duration: "1 min",
-    },
-    {
-      id: 5,
-      title: "Biology 101 Notes",
-      type: "MCQ",
-      date: "2024-03-08",
-      duration: "3 min",
-    },
-  ]);
+  const {
+    data: notes = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["notes"],
+    queryFn: () => getAllNotes(),
+  });
+
+  const [historyItems, setHistoryItems] = useState([]);
+
+  useEffect(() => {
+    if (notes?.notes) {
+      const { summeries = [], mcqs = [], qus = [] } = notes.notes;
+
+      const processItem = (item, type, duration) => ({
+        id: item._id,
+        title: item.promptText,
+        type: type,
+        date: new Date(item.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        duration: duration,
+        originalDate: new Date(item.createdAt),
+      });
+
+      const processedSummeries = summeries.map((item) =>
+        processItem(item, "Summary", "1 min")
+      );
+      const processedMcqs = mcqs.map((item) =>
+        processItem(item, "MCQ", "2 min")
+      );
+      const processedQus = qus.map((item) =>
+        processItem(item, "Questions", "3 min")
+      );
+
+      const allItems = [
+        ...processedSummeries,
+        ...processedMcqs,
+        ...processedQus,
+      ].sort((a, b) => b.originalDate - a.originalDate);
+
+      setHistoryItems(allItems);
+    }
+  }, [notes]);
 
   const getTypeStyle = (type) => {
     switch (type) {

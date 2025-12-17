@@ -16,3 +16,8 @@ export const getCurrentUser = async () => {
   const user = await axiosInstance.get("/auth/me");
   return user.data;
 };
+
+export const getAllNotes = async () => {
+  const notes = await axiosInstance.get("/allnotes");
+  return notes.data;
+};
