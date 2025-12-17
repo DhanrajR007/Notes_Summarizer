@@ -1,191 +1,215 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
-  const [user] = useState({
-    name: "Alex Morgan",
-    email: "alex.morgan@example.com",
-    role: "Content Creator",
-    bio: "Passionate about simplifying complex information through AI.",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-    joinDate: "Nov 2024",
-    location: "San Francisco, CA",
-  });
+  const { user } = useSelector((state) => state.auth);
 
-  const stats = [
+  if (!user || !user.user) {
+    return (
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center text-neutral-400">
+        Loading...
+      </div>
+    );
+  }
+
+  const { name, email, imageUrl, createdAt } = user.user;
+
+  // Dummy Data
+  const recentNotes = [
     {
-      label: "Summaries",
-      value: 124,
-      icon: "📝",
-      color: "from-blue-500 to-cyan-500",
+      title: "React Architecture",
+      desc: "Atomic design principles",
+      date: "2h ago",
+      color: "bg-orange-500",
     },
     {
-      label: "Questions",
-      value: 85,
-      icon: "❓",
-      color: "from-purple-500 to-pink-500",
+      title: "Backend Scaling",
+      desc: "Horizontal vs Vertical",
+      date: "5h ago",
+      color: "bg-blue-500",
     },
     {
-      label: "Quizzes",
-      value: 43,
-      icon: "✅",
-      color: "from-amber-500 to-orange-500",
+      title: "UI/UX Trends",
+      desc: "Bento grids & glassmorphism",
+      date: "1d ago",
+      color: "bg-purple-500",
+    },
+    {
+      title: "Docker Basics",
+      desc: "Containerization 101",
+      date: "2d ago",
+      color: "bg-emerald-500",
     },
   ];
 
+  const mcqStats = {
+    total: 150,
+    passed: 120,
+    accuracy: "80%",
+    recent: [
+      { subject: "JavaScript", score: "9/10" },
+      { subject: "Python", score: "7/10" },
+    ],
+  };
+
+  const questions = [
+    { title: "How to optimize React re-renders?", answers: 12, views: 340 },
+    { title: "Best DB for high-read apps?", answers: 8, views: 210 },
+  ];
+
+  const BentoCard = ({ children, className = "" }) => (
+    <div
+      className={`bg-neutral-900 border border-neutral-800 rounded-2xl p-6 ${className}`}
+    >
+      {children}
+    </div>
+  );
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gray-950 font-sans">
-      {/* Background Ambience (Matching Dashboard/History) */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse-slow opacity-50"></div>
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-fuchsia-600/20 rounded-full blur-[120px] animate-pulse-slow animation-delay-4000 opacity-50"></div>
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 p-6 md:p-8 font-sans selection:bg-neutral-700">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+            Dashboard
+          </h1>
+          <p className="text-neutral-400">
+            Welcome back to your personal workspace.
+          </p>
+        </header>
 
-      <div className="w-full max-w-6xl relative z-10 animate-fade-in-up">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              Profile
-            </h1>
-            <p className="text-gray-400 text-sm mt-1">
-              Manage your account and view statistics
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left Column: Identity Card */}
-          <div className="w-full lg:w-1/3">
-            <div className="glass-card rounded-2xl p-8 border border-white/10 flex flex-col items-center text-center h-full">
-              <div className="relative mb-6">
-                <div className="w-32 h-32 rounded-full p-1 bg-linear-to-tr from-indigo-500 to-purple-500">
-                  <img
-                    src={user.avatar}
-                    alt="Profile"
-                    className="w-full h-full rounded-full object-cover border-4 border-gray-900"
-                  />
-                </div>
-                <div className="absolute bottom-0 right-0 p-2 bg-gray-900 rounded-full border border-white/10">
-                  <div className="w-4 h-4 bg-emerald-500 rounded-full animate-pulse"></div>
-                </div>
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-4">
+          {/* 1. Profile Main Card (Span 2 cols, 2 rows) */}
+          <BentoCard className="md:col-span-2 md:row-span-2 flex flex-col justify-between relative overflow-hidden group">
+            <div className="relative z-10 flex flex-col items-center text-center pt-8 pb-4">
+              <div className="w-28 h-28 rounded-full border-4 border-neutral-800 p-1 mb-6 shadow-2xl">
+                <img
+                  src={
+                    imageUrl ||
+                    `https://ui-avatars.com/api/?name=${name}&background=262626&color=fff`
+                  }
+                  alt={name}
+                  className="w-full h-full rounded-full object-cover"
+                />
               </div>
-
-              <h2 className="text-2xl font-bold text-white mb-1">
-                {user.name}
-              </h2>
-              <p className="text-indigo-400 font-medium text-sm mb-4">
-                {user.role}
-              </p>
-              <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                {user.bio}
-              </p>
-
-              <div className="w-full space-y-4 mt-auto">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
-                  <div className="flex items-center gap-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <span className="text-gray-400 text-sm">Email</span>
-                  </div>
-                  <span className="text-white text-sm font-medium truncate max-w-[150px]">
-                    {user.email}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
-                  <div className="flex items-center gap-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    <span className="text-gray-400 text-sm">Location</span>
-                  </div>
-                  <span className="text-white text-sm font-medium">
-                    {user.location}
-                  </span>
-                </div>
-
-                <button className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-500/20 transition-all active:scale-[0.98]">
-                  Edit Profile
-                </button>
-              </div>
+              <h2 className="text-3xl font-bold text-white mb-2">{name}</h2>
+              <p className="text-neutral-400 mb-6">{email}</p>
+              <button className="bg-white text-black px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-neutral-200 transition-colors">
+                Edit Profile
+              </button>
             </div>
-          </div>
 
-          {/* Right Column: Stats Grid */}
-          <div className="w-full lg:w-2/3 flex flex-col gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
-              {stats.map((stat, index) => (
+            {/* Decorative background element */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-neutral-800/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none group-hover:bg-neutral-800/20 transition-all duration-500"></div>
+          </BentoCard>
+
+          {/* 2. Quick Stats (Span 1 col) */}
+          <BentoCard className="flex flex-col justify-center">
+            <span className="text-neutral-500 text-sm font-medium uppercase tracking-wider mb-1">
+              Joined
+            </span>
+            <span className="text-2xl font-bold text-white">
+              {new Date(createdAt).toLocaleDateString(undefined, {
+                month: "short",
+                year: "numeric",
+              })}
+            </span>
+          </BentoCard>
+
+          {/* 3. Status (Span 1 col) */}
+          <BentoCard className="flex flex-col justify-center bg-emerald-900/10 border-emerald-900/20">
+            <span className="text-emerald-500 text-sm font-medium uppercase tracking-wider mb-1">
+              Status
+            </span>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-2xl font-bold text-white">Active</span>
+            </div>
+          </BentoCard>
+
+          {/* 4. Notes Section (Span 2 cols, 2 rows) - Vertical List */}
+          <BentoCard className="md:col-span-2 md:row-span-2 flex flex-col">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold text-white">Recent Notes</h3>
+              <span className="text-xs font-semibold bg-neutral-800 text-neutral-300 px-2 py-1 rounded-md">
+                {recentNotes.length}
+              </span>
+            </div>
+            <div className="space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar">
+              {recentNotes.map((note, i) => (
                 <div
-                  key={index}
-                  className="glass-card p-6 rounded-2xl border border-white/10 flex flex-col items-center justify-center text-center hover:bg-white/5 transition-all group h-full"
+                  key={i}
+                  className="flex items-start gap-4 p-3 rounded-xl hover:bg-neutral-800/50 transition-colors cursor-pointer group"
                 >
                   <div
-                    className={`p-4 rounded-2xl bg-linear-to-br ${stat.color} bg-opacity-10 mb-4 group-hover:scale-110 transition-transform`}
+                    className={`w-10 h-10 rounded-lg flex-shrink-0 ${note.color} bg-opacity-20 flex items-center justify-center text-lg`}
                   >
-                    <span className="text-2xl">{stat.icon}</span>
+                    📝
                   </div>
-                  <h3 className="text-4xl font-bold text-white mb-2">
-                    {stat.value}
-                  </h3>
-                  <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">
-                    {stat.label}
-                  </p>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-medium text-white group-hover:text-blue-400 transition-colors">
+                      {note.title}
+                    </h4>
+                    <p className="text-xs text-neutral-400 mt-0.5">
+                      {note.desc}
+                    </p>
+                  </div>
+                  <span className="text-xs text-neutral-600 font-medium whitespace-nowrap">
+                    {note.date}
+                  </span>
                 </div>
               ))}
             </div>
+          </BentoCard>
 
-            {/* Placeholder for future content if needed, matches layout density */}
-            <div className="glass-card rounded-2xl p-8 border border-white/10 flex-1 flex flex-col justify-center items-center text-center opacity-70">
-              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  />
-                </svg>
+          {/* 5. MCQ Performance (Span 1 col, 2 rows) */}
+          <BentoCard className="md:row-span-2 flex flex-col">
+            <h3 className="text-lg font-semibold text-white mb-4">MCQ Stats</h3>
+            <div className="flex-1 flex flex-col items-center justify-center my-4">
+              <div className="w-24 h-24 rounded-full border-8 border-neutral-800 border-t-blue-500 flex items-center justify-center mb-4">
+                <span className="text-xl font-bold">{mcqStats.accuracy}</span>
               </div>
-              <h3 className="text-lg font-medium text-white mb-2">
-                Workspace & Projects
-              </h3>
-              <p className="text-gray-400 text-sm max-w-md">
-                Your active projects and workspace settings will appear here.
+              <p className="text-center text-sm text-neutral-400">
+                Total Accuracy
               </p>
             </div>
-          </div>
+            <div className="space-y-3 mt-auto">
+              {mcqStats.recent.map((q, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span className="text-neutral-300">{q.subject}</span>
+                  <span className="font-mono text-white">{q.score}</span>
+                </div>
+              ))}
+            </div>
+          </BentoCard>
+
+          {/* 6. Questions (Span 1 col, 2 rows) */}
+          <BentoCard className="md:row-span-2 flex flex-col bg-gradient-to-b from-neutral-900 to-neutral-800/50">
+            <h3 className="text-lg font-semibold text-white mb-4">Q&A</h3>
+            <div className="space-y-4">
+              {questions.map((q, i) => (
+                <div
+                  key={i}
+                  className="bg-black/20 p-4 rounded-xl border border-white/5"
+                >
+                  <p className="text-sm font-medium text-neutral-200 mb-3 line-clamp-2 leading-relaxed">
+                    "{q.title}"
+                  </p>
+                  <div className="flex items-center gap-3 text-xs text-neutral-500">
+                    <span className="flex items-center gap-1">
+                      <span className="text-neutral-300">{q.answers}</span> ans
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="text-neutral-300">{q.views}</span> views
+                    </span>
+                  </div>
+                </div>
+              ))}
+              <button className="w-full py-3 rounded-xl border border-dashed border-neutral-700 text-neutral-400 text-sm hover:text-white hover:border-neutral-500 transition-all">
+                + Ask Question
+              </button>
+            </div>
+          </BentoCard>
         </div>
       </div>
     </div>
