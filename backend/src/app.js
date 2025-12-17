@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import userRouter from "./routes/user.route.js";
 import aiRouter from "./routes/ai.route.js";
+import allnotesRouter from "./routes/allnotes.route.js";
 import { errorHandler } from "./utils/error.js";
 import cookieParser from "cookie-parser";
 const app = express();
@@ -14,5 +15,6 @@ app.use(errorHandler);
 
 app.use("/api/auth", userRouter);
 app.use("/api/ai", aiRouter);
+app.use("/api", allnotesRouter);
 
 export default app;
