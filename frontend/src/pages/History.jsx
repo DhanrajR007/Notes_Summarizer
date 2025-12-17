@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getAllNotes } from "../apis/user.api";
 import { useQuery } from "@tanstack/react-query";
+import { useDispatch, useSelector } from "react-redux";
+import { setHistoryItems } from "../store/slice/hisorySlice";
 
 const History = () => {
+  const dispatch = useDispatch();
   const {
     data: notes = [],
     isLoading,
@@ -11,46 +14,36 @@ const History = () => {
   } = useQuery({
     queryKey: ["notes"],
     queryFn: () => getAllNotes(),
+    refetchInterval: 30000,
+    staleTime: 0,
   });
 
-  const [historyItems, setHistoryItems] = useState([]);
-
   useEffect(() => {
-    if (notes?.notes) {
-      const { summeries = [], mcqs = [], qus = [] } = notes.notes;
+    if (!notes?.notes) return;
 
-      const processItem = (item, type, duration) => ({
-        id: item._id,
-        title: item.promptText,
-        type: type,
-        date: new Date(item.createdAt).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-        duration: duration,
-        originalDate: new Date(item.createdAt),
-      });
+    const { summeries = [], mcqs = [], qus = [] } = notes.notes;
 
-      const processedSummeries = summeries.map((item) =>
-        processItem(item, "Summary", "1 min")
-      );
-      const processedMcqs = mcqs.map((item) =>
-        processItem(item, "MCQ", "2 min")
-      );
-      const processedQus = qus.map((item) =>
-        processItem(item, "Questions", "3 min")
-      );
+    const processItem = (item, type, duration) => ({
+      id: item._id,
+      title: item.promptText,
+      type,
+      date: new Date(item.createdAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      duration,
+      originalDate: new Date(item.createdAt),
+    });
 
-      const allItems = [
-        ...processedSummeries,
-        ...processedMcqs,
-        ...processedQus,
-      ].sort((a, b) => b.originalDate - a.originalDate);
+    const allItems = [
+      ...summeries.map((i) => processItem(i, "Summary", "1 min")),
+      ...mcqs.map((i) => processItem(i, "MCQ", "2 min")),
+      ...qus.map((i) => processItem(i, "Questions", "3 min")),
+    ].sort((a, b) => b.originalDate - a.originalDate);
 
-      setHistoryItems(allItems);
-    }
-  }, [notes]);
+    dispatch(setHistoryItems(allItems)); // ✅ STORE ME SAVE
+  }, [notes, dispatch]);
 
   const getTypeStyle = (type) => {
     switch (type) {
@@ -64,6 +57,7 @@ const History = () => {
         return "text-white";
     }
   };
+  const historyItems = useSelector((state) => state.history.items);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gray-950 font-sans">
