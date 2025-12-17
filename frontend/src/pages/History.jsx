@@ -27,6 +27,7 @@ const History = () => {
       id: item._id,
       title: item.promptText,
       type,
+      content: item.summaryText || item.mcqText || item.qusText,
       date: new Date(item.createdAt).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",

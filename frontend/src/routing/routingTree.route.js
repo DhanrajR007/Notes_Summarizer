@@ -5,6 +5,7 @@ import Auth from "../pages/Auth";
 import Profile from "../pages/Profile";
 import Dashboard from "../pages/Dashboard";
 import History from "../pages/History";
+import LatestResult from "../pages/LatestResult";
 import { checkAuth } from "../utils/helper";
 
 const rootRoute = createRootRoute({
@@ -43,6 +44,12 @@ const historyRoute = createRoute({
   component: History,
   beforeLoad: checkAuth,
 });
+const latestRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/latest",
+  component: LatestResult,
+  beforeLoad: checkAuth,
+});
 
 export const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -50,4 +57,5 @@ export const routeTree = rootRoute.addChildren([
   dashboardRoute,
   authRoute,
   historyRoute,
+  latestRoute,
 ]);

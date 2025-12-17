@@ -17,20 +17,6 @@ export const generateSummary = async (file, text, userId) => {
     throw error;
   }
 };
-export const generateQuestion = async (file, text, userId) => {
-  try {
-    let fileUrl = null;
-    if (file) {
-      fileUrl = await uploadFile(file);
-    }
-    const prompt = questionPrompt();
-    const question = await generate(file, text, prompt);
-    const data = await createQus(text || fileUrl, question.data, userId);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
 export const generateMCQ = async (file, text, userId) => {
   try {
     let fileUrl = null;
@@ -40,6 +26,20 @@ export const generateMCQ = async (file, text, userId) => {
     const prompt = mcqPrompt();
     const mcq = await generate(file, text, prompt);
     const data = await createMcq(text || fileUrl, mcq.data, userId);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const generateQuestion = async (file, text, userId) => {
+  try {
+    let fileUrl = null;
+    if (file) {
+      fileUrl = await uploadFile(file);
+    }
+    const prompt = questionPrompt();
+    const question = await generate(file, text, prompt);
+    const data = await createQus(text || fileUrl, question.data, userId);
     return data;
   } catch (error) {
     throw error;
