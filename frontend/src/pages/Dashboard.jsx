@@ -5,6 +5,7 @@ import InputTabs from "../components/dashboard/InputTabs";
 import InputPanel from "../components/dashboard/InputPanel";
 import GenerationOptions from "../components/dashboard/GenerationOptions";
 import GenerateButton from "../components/dashboard/GenerateButton";
+import { manageData } from "../utils/helper";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("text"); // 'text' or 'file'
@@ -21,9 +22,11 @@ const Dashboard = () => {
     setFile(selectedFile);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting:", { activeTab, generationType, textInput, file });
+    const data = await manageData(file, textInput, generationType);
+    console.log(data);
+    // console.log("Submitting:", { activeTab, generationType, textInput, file });
   };
 
   return (

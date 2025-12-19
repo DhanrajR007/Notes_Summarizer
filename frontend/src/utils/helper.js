@@ -24,9 +24,12 @@ export const checkAuth = async ({ context }) => {
 export const manageData = async (file, text, generationType) => {
   if (generationType === "summary") {
     const data = await createSummary(text);
+    return data;
   } else if (generationType === "mcq") {
     const data = await createMCQ(text);
+    return data;
   } else if (generationType === "questions") {
     const data = await createQuestions(text);
+    return data;
   }
 };
