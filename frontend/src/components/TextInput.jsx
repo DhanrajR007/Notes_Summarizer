@@ -17,6 +17,9 @@ const TextInput = ({ label, placeholder, value, onChange, icon }) => {
         ></textarea>
         {/* Subtle glow effect on focus - implemented via ring in css but adding extra div for more complex effects if needed later */}
       </div>
+      <p className="text-sm text-gray-500 mt-2">
+        Minimum 200 words are required
+      </p>
     </div>
   );
 };

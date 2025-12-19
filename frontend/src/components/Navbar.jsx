@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const user = useSelector((state) => state.auth);
-  console.log(user);
 
   return (
     <nav className="fixed top-0 w-full z-50 px-6 py-4">
