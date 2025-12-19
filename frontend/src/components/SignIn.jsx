@@ -2,8 +2,10 @@ import { useState } from "react";
 import { loginUser } from "../apis/user.api";
 import { useDispatch } from "react-redux";
 import { login } from "../store/slice/authSlice";
+import { useNavigate } from "@tanstack/react-router";
 
 const SignIn = ({ onSwitch, onLogin }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,6 +22,7 @@ const SignIn = ({ onSwitch, onLogin }) => {
       setLoading(false);
       setEmail("");
       setPassword("");
+      navigate({ to: "/dashboard" });
     } catch (err) {
       setLoading(false);
       console.log(err);

@@ -1,6 +1,10 @@
 import { Link } from "@tanstack/react-router";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+  const user = useSelector((state) => state.auth);
+  console.log(user);
+
   return (
     <nav className="fixed top-0 w-full z-50 px-6 py-4">
       <div className="max-w-7xl mx-auto backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl px-6 py-3 flex items-center justify-between shadow-lg">
@@ -21,23 +25,38 @@ const Navbar = () => {
             </svg>
           </div>
           <span className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-gray-400">
-            NoteSum
+            <Link to="/">NoteSum</Link>
           </span>
         </div>
 
         <div className="flex items-center gap-4">
-          <Link
-            to="/auth"
-            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link
-            to="/auth"
-            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
-          >
-            Get Started
-          </Link>
+          <div>
+            {user.isAuthenticated ? (
+              <Link
+                to="/dashboard"
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/auth"
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+              >
+                Login
+              </Link>
+            )}
+          </div>
+          <div>
+            {user.isAuthenticated ? (
+              <Link
+                to="/profile"
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+              >
+                Profile
+              </Link>
+            ) : null}
+          </div>
         </div>
       </div>
     </nav>
