@@ -47,14 +47,23 @@ const Navbar = () => {
             )}
           </div>
           <div>
-            {user.isAuthenticated ? (
-              <Link
-                to="/profile"
-                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
-              >
-                Profile
-              </Link>
-            ) : null}
+            {user.isAuthenticated && (
+              <>
+                <Link
+                  to="/profile"
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+                >
+                  Profile
+                </Link>
+
+                <Link
+                  to="/history"
+                  className="mx-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+                >
+                  History
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
