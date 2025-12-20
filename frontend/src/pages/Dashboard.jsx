@@ -5,6 +5,7 @@ import InputTabs from "../components/dashboard/InputTabs";
 import InputPanel from "../components/dashboard/InputPanel";
 import GenerationOptions from "../components/dashboard/GenerationOptions";
 import GenerateButton from "../components/dashboard/GenerateButton";
+import ResultDisplay from "../components/dashboard/ResultDisplay";
 import { manageData } from "../utils/helper";
 
 const Dashboard = () => {
@@ -12,6 +13,9 @@ const Dashboard = () => {
   const [generationType, setGenerationType] = useState("summary"); // 'summary', 'mcq', 'questions'
   const [textInput, setTextInput] = useState("");
   const [file, setFile] = useState(null);
+
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const wordCount = textInput.trim().split(/\s+/).filter(Boolean).length;
   const handleTextChange = (e) => {
@@ -24,9 +28,19 @@ const Dashboard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await manageData(file, textInput, generationType);
-    console.log(data);
-    // console.log("Submitting:", { activeTab, generationType, textInput, file });
+    setLoading(true);
+    try {
+      const data = await manageData(file, textInput, generationType);
+      setResult(data);
+    } catch (error) {
+      console.error("Error generating content:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearResult = () => {
+    setResult(null);
   };
 
   return (
@@ -39,17 +53,25 @@ const Dashboard = () => {
         <DashboardHeader />
 
         <div className="flex flex-col lg:flex-row gap-6 animate-fade-in-up animation-delay-300">
-          {/* Main Input Area */}
-          <div className="glass-card rounded-2xl p-1 flex-1 flex flex-col md:flex-row overflow-hidden min-h-[500px]">
-            <InputTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-            <InputPanel
-              activeTab={activeTab}
-              textInput={textInput}
-              handleTextChange={handleTextChange}
-              handleFileChange={handleFileChange}
-              handleSubmit={handleSubmit}
+          {/* Main Input Area or Result Display */}
+          {result ? (
+            <ResultDisplay
+              result={result}
+              type={generationType}
+              onBack={clearResult}
             />
-          </div>
+          ) : (
+            <div className="glass-card rounded-2xl p-1 flex-1 flex flex-col md:flex-row overflow-hidden min-h-[500px]">
+              <InputTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+              <InputPanel
+                activeTab={activeTab}
+                textInput={textInput}
+                handleTextChange={handleTextChange}
+                handleFileChange={handleFileChange}
+                handleSubmit={handleSubmit}
+              />
+            </div>
+          )}
 
           {/* Configuration / Output Sidebar */}
           <div className="w-full lg:w-80 flex flex-col gap-6">
@@ -58,8 +80,9 @@ const Dashboard = () => {
               setGenerationType={setGenerationType}
             />
             <GenerateButton
-              disabled={wordCount < 200}
+              disabled={wordCount < 5 || loading}
               handleSubmit={handleSubmit}
+              loading={loading}
             />
           </div>
         </div>
