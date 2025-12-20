@@ -58,7 +58,7 @@ const Dashboard = () => {
               setGenerationType={setGenerationType}
             />
             <GenerateButton
-              disabled={wordCount < 5}
+              disabled={wordCount < 200}
               handleSubmit={handleSubmit}
             />
           </div>
