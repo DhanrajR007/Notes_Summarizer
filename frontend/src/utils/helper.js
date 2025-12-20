@@ -1,4 +1,4 @@
-import { createSummary } from "../apis/ai.api";
+import { createSummary, createMCQ, createQuestions } from "../apis/ai.api";
 import { getCurrentUser } from "../apis/user.api";
 import { login } from "../store/slice/authSlice";
 import { redirect } from "@tanstack/react-router";
